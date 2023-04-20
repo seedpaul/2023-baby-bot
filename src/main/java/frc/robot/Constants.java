@@ -29,6 +29,10 @@ public final class Constants {
 
     public static final double rotationGoverner = 1.0;
     public static final double speedGoverner = 1.0;
+  }
 
+  public static class SnatchAndSpitConstants{
+    public static final int upperSparkMaxID = 6;
+    public static final int lowerSparkMaxID = 9;
   }
 }
