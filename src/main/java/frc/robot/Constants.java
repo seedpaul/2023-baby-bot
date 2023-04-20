@@ -67,4 +67,25 @@ public final class Constants {
       public static final double allowedError = 0;
     }
   }
+
+  public static class ElbowConstants {
+    public static final int elbowSparkMaxID = 0;
+
+    public static final class ElbowPIDConstants {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+      public static final double kIz = 0;
+      public static final double kFF = 0.0;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -1;
+      public static final double maxRPM = 5700;
+      public static final double maxVel = 2000;
+      public static final double minVel = 0;
+      public static final double maxAcc = 1500;
+      public static final int smartMotionSlot = 0;
+      public static final double allowedError = 0;
+    }
+
+  }
 }

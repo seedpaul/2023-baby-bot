@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -86,6 +85,7 @@ public class SnatchAndSpit extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 
   private double getVelocity(){
@@ -103,7 +103,7 @@ public class SnatchAndSpit extends SubsystemBase {
   public void shootMiddle(){
     //TODO: turn wheels so cube is shot at middle shelf
   }
-  
+
   public void drop(){
     //TODO: turn wheels so cube is dropped into hybrid
   }
