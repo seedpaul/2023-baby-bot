@@ -30,9 +30,9 @@ public class DriveBase extends SubsystemBase {
     // this is a constructor, this is called when we create an instance of the drive base
     System.out.println("drive train created");
 
-    leftFrontTalonFX.setNeutralMode(NeutralMode.Coast);
+    leftFrontTalonFX.setNeutralMode(NeutralMode.Brake);
     leftBackTalonFX.setNeutralMode(NeutralMode.Coast);
-    rightFrontTalonFX.setNeutralMode(NeutralMode.Coast);
+    rightFrontTalonFX.setNeutralMode(NeutralMode.Brake);
     rightBackTalonFX.setNeutralMode(NeutralMode.Coast);
 
     SupplyCurrentLimitConfiguration SCLC = new SupplyCurrentLimitConfiguration(true,40,60,1);

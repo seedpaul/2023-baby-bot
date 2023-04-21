@@ -31,7 +31,8 @@ public class RobotContainer {
 
     babyBotBase.setDefaultCommand(
                                                   //rotation                             speed
-      new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getLeftX(),-m_driverController.getRightY()) , babyBotBase));
+      new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getLeftY(),m_driverController.getRightX()) , babyBotBase));
+      //new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getRightX(),-m_driverController.getLeftY()) , babyBotBase));
   }
 
   /**
