@@ -10,10 +10,15 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SnatchAndSpit extends SubsystemBase {
+
+  private static SnatchAndSpit sas = null;
+  private double TargetVelocityLower = .0;
+  private double TargetVelocityUpper = .0;
 
   private final RelativeEncoder encoderLower;
   private final RelativeEncoder encoderUpper;
@@ -26,8 +31,18 @@ public class SnatchAndSpit extends SubsystemBase {
   private final CANSparkMax upperSparkMax = new CANSparkMax(Constants.SnatchAndSpitConstants.upperSparkMaxID,
       MotorType.kBrushed);
 
+  private int currentRPMIndex = 0;
+
+  public static SnatchAndSpit getInstance(){
+    if (sas == null){
+      sas = new SnatchAndSpit();
+    }
+    return sas;
+
+  }
+
   /** Creates a new SnatchAndSpit. */
-  public SnatchAndSpit() {
+  private SnatchAndSpit() {
 
     lowerSparkMax.restoreFactoryDefaults();
     upperSparkMax.restoreFactoryDefaults();
@@ -86,26 +101,74 @@ public class SnatchAndSpit extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    pidControllerLower.setReference(TargetVelocityLower, CANSparkMax.ControlType.kVelocity);
+    pidControllerUpper.setReference(TargetVelocityUpper, CANSparkMax.ControlType.kVelocity);
+
+    SmartDashboard.getBoolean("Intake Velocity", currentRPMIndex == 0);
+    SmartDashboard.getBoolean("High Velocity", currentRPMIndex == 1);
+    SmartDashboard.getBoolean("Middle Velocity", currentRPMIndex == 2);
+    SmartDashboard.getBoolean("Drop Velocity", currentRPMIndex == 3);
+
   }
 
-  private double getVelocity(){
+  public void stop() {
+    TargetVelocityLower = 0;
+    TargetVelocityUpper = 0;
+  }
+
+  private double calculateVelocity() {
     // TODO: create equation to calculate velocity based on distance
     return 0.0;
   }
 
-  public void intake(){
-    //TODO: turn wheels so cube is injested
-  }
-  public void shootHigh(){
-    //TODO: turn wheels so cube is shot at high shelf
+  public void intake() {
+    // TODO: turn wheels so cube is injested
+
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.intake;
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.intake;
+    currentRPMIndex = 0;
   }
 
-  public void shootMiddle(){
-    //TODO: turn wheels so cube is shot at middle shelf
+  public void shootHigh() {
+    // TODO: turn wheels so cube is shot at high shelf
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.shootHigh;
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.shootHigh;
+    currentRPMIndex = 1;
+
   }
 
-  public void drop(){
-    //TODO: turn wheels so cube is dropped into hybrid
+  public void shootMiddle() {
+    // TODO: turn wheels so cube is shot at middle shelf
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.shootMiddle;
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.shootMiddle;
+    currentRPMIndex = 2;
+
+  }
+
+  public void drop() {
+    // TODO: turn wheels so cube is dropped into hybrid
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.drop;
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.drop;
+    currentRPMIndex = 3;
+
+  }
+
+  public void stepUp() {
+    if (currentRPMIndex < 3) {
+      currentRPMIndex++;
+    }
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.validVelocity[currentRPMIndex];
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.validVelocity[currentRPMIndex];
+
+  }
+
+  public void stepDown() {
+    if (currentRPMIndex < 0) {
+      currentRPMIndex--;
+    }
+    TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.validVelocity[currentRPMIndex];
+    TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.validVelocity[currentRPMIndex];
+
   }
 
 }

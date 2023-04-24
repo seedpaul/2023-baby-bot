@@ -6,9 +6,13 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.SnatchAndSpit;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -22,7 +26,10 @@ public class RobotContainer {
   private final DriveBase babyBotBase = new DriveBase();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final XboxController driverController = new XboxController(OperatorConstants.kDriverControllerPort);
+  private final XboxController assistController = new XboxController(OperatorConstants.kAssistControllerPort);
+
+  private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -31,7 +38,7 @@ public class RobotContainer {
 
     babyBotBase.setDefaultCommand(
                                                   //rotation                             speed
-      new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getLeftY(),m_driverController.getRightX()) , babyBotBase));
+      new RunCommand(() -> babyBotBase.arcadeDrive(driverController.getLeftY(),driverController.getRightX()) , babyBotBase));
       //new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getRightX(),-m_driverController.getLeftY()) , babyBotBase));
   }
 
@@ -45,6 +52,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+JoystickButton buttonB_as = new JoystickButton(assistController,Constants.OperatorConstants.B_BUTTON);
+JoystickButton buttonX_as = new JoystickButton(assistController,Constants.OperatorConstants.X_BUTTON);
+JoystickButton rightBumper_as = new JoystickButton(assistController,Constants.OperatorConstants.RIGHT_BUMPER);
+
+buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp,snatchAndSpitSubsystem));
+buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown,snatchAndSpitSubsystem));
+
 
   }
 

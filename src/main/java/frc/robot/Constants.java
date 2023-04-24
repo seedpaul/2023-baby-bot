@@ -19,6 +19,19 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kAssistControllerPort = 1;
+    public static final int A_BUTTON = 0;
+    public static final int B_BUTTON = 1;
+    public static final int X_BUTTON = 2;
+    public static final int Y_BUTTON = 3;
+    public static final int LEFT_BUMPER = 4;
+    public static final int RIGHT_BUMPER = 5;
+    public static final int RIGHT_TRIGGER = 6;
+    public static final int TWO_SQUARES_BUTTON = 7;
+    public static final int ADIDAS_BUTTON = 8;
+    public static final int LEFT_STICK_PRESS = 9;
+    public static final int RIGHT_STICK_PRESS = 10;
+
   }
 
   public static class DriveBaseConstants {
@@ -66,6 +79,24 @@ public final class Constants {
       public static final int smartMotionSlot = 0;
       public static final double allowedError = 0;
     }
+
+    public static final class VelocityConstants {
+      public static final class Upper{
+        public static final double intake = 0;
+        public static final double shootHigh = 0;
+        public static final double shootMiddle = 0;
+        public static final double drop = 0;
+        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
+      }
+      public static final class Lower{
+        public static final double intake = 0;
+        public static final double shootHigh = 0;
+        public static final double shootMiddle = 0;
+        public static final double drop = 0;
+        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
+      }
+    }
+
   }
 
   public static class ElbowConstants {
