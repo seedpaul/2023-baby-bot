@@ -6,8 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.SnatchAndSpit;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -24,7 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase babyBotBase = new DriveBase();
-
+  private LED led = new LED(this);
+  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final XboxController assistController = new XboxController(OperatorConstants.kAssistControllerPort);
@@ -72,4 +76,20 @@ buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown,snatchAndS
     // An example command will be run in autonomous
     return null;
   }
+  
+	public boolean isRedAlliance() {
+		return DriverStation.getAlliance() == Alliance.Red;
+	}
+
+	public boolean isDisabled() {
+		return DriverStation.isDisabled();
+	}
+
+	public boolean isAutonomous() {
+		return DriverStation.isAutonomous();
+	}
+
+	public boolean isTeleop() {
+		return DriverStation.isTeleop();
+	}
 }
