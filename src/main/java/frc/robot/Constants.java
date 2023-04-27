@@ -105,10 +105,11 @@ public final class Constants {
 
   public static class ElbowConstants {
 
-    public static final int elbowSparkMaxID = 0;
+    public static final int elbowSparkMaxRightID = 11;
+    public static final int elbowSparkMaxLeftID = 55;
 
     public static final class ElbowPIDConstants {
-      public static final double kP = 0;
+      public static final double kP = 1;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kIz = 0;
