@@ -18,19 +18,19 @@ public class Elbow extends SubsystemBase {
 
   private final RelativeEncoder encoder;
   private SparkMaxPIDController pidController;
-  private final CANSparkMax SparkMax = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxID,
-      MotorType.kBrushed);
+  private final CANSparkMax SparkMaxRight = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxID,MotorType.kBrushless);
+  private final CANSparkMax SparkMaxLeft = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxID, MotorType.kBrushless) ;
 
   /** Creates a new Elbow. */
   public Elbow() {
 
-    SparkMax.restoreFactoryDefaults();
-    SparkMax.setIdleMode(IdleMode.kBrake);
-    SparkMax.enableVoltageCompensation(12);
+    SparkMaxRight.restoreFactoryDefaults();
+    SparkMaxRight.setIdleMode(IdleMode.kBrake);
+    SparkMaxRight.enableVoltageCompensation(12);
 
-    encoder = SparkMax.getEncoder();
+    encoder = SparkMaxRight.getEncoder();
 
-    pidController = SparkMax.getPIDController();
+    pidController = SparkMaxRight.getPIDController();
     pidController.setFeedbackDevice(encoder);
 
     pidController.setP(Constants.ElbowConstants.ElbowPIDConstants.kP);
