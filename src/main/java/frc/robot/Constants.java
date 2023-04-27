@@ -54,7 +54,7 @@ public final class Constants {
     public static final int lowerSparkMaxID = 9;
 
     public static final class UpperPIDConstants {
-      public static final double kP = 0;
+      public static final double kP = 1.0;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kIz = 0;
@@ -70,7 +70,7 @@ public final class Constants {
     }
 
     public static final class LowerPIDConstants {
-      public static final double kP = 0;
+      public static final double kP = 1.0;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kIz = 0;
@@ -87,17 +87,17 @@ public final class Constants {
 
     public static final class VelocityConstants {
       public static final class Upper{
-        public static final double intake = 0;
-        public static final double shootHigh = 0;
-        public static final double shootMiddle = 0;
-        public static final double drop = 0;
+        public static final double intake = 1000;
+        public static final double shootHigh = 5200;
+        public static final double shootMiddle = 3000;
+        public static final double drop = 500;
         public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
       }
       public static final class Lower{
-        public static final double intake = 0;
-        public static final double shootHigh = 0;
-        public static final double shootMiddle = 0;
-        public static final double drop = 0;
+        public static final double intake = 1000;
+        public static final double shootHigh = 5200;
+        public static final double shootMiddle = 3000;
+        public static final double drop = 500;
         public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
       }
     }

@@ -27,14 +27,16 @@ public class SnatchAndSpit extends SubsystemBase {
   private SparkMaxPIDController pidControllerLower;
 
   private final CANSparkMax lowerSparkMax = new CANSparkMax(Constants.SnatchAndSpitConstants.lowerSparkMaxID,
-      MotorType.kBrushed);
+      MotorType.kBrushless);
   private final CANSparkMax upperSparkMax = new CANSparkMax(Constants.SnatchAndSpitConstants.upperSparkMaxID,
-      MotorType.kBrushed);
+      MotorType.kBrushless);
 
   private int currentRPMIndex = 0;
 
-  public static SnatchAndSpit getInstance(){
-    if (sas == null){
+  private boolean enableSpit = false;
+
+  public static SnatchAndSpit getInstance() {
+    if (sas == null) {
       sas = new SnatchAndSpit();
     }
     return sas;
@@ -101,8 +103,14 @@ public class SnatchAndSpit extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    pidControllerLower.setReference(TargetVelocityLower, CANSparkMax.ControlType.kVelocity);
-    pidControllerUpper.setReference(TargetVelocityUpper, CANSparkMax.ControlType.kVelocity);
+    if(enableSpit){
+      pidControllerLower.setReference(TargetVelocityLower, CANSparkMax.ControlType.kVelocity);
+      pidControllerUpper.setReference(TargetVelocityUpper, CANSparkMax.ControlType.kVelocity);
+    
+    }else{
+      pidControllerLower.setReference(0, CANSparkMax.ControlType.kVelocity);
+      pidControllerUpper.setReference(0, CANSparkMax.ControlType.kVelocity);
+    }
 
     SmartDashboard.getBoolean("Intake Velocity", currentRPMIndex == 0);
     SmartDashboard.getBoolean("High Velocity", currentRPMIndex == 1);
@@ -111,9 +119,12 @@ public class SnatchAndSpit extends SubsystemBase {
 
   }
 
+  public void spit() {
+    this.enableSpit = true;
+  }
+
   public void stop() {
-    TargetVelocityLower = 0;
-    TargetVelocityUpper = 0;
+    this.enableSpit = false;
   }
 
   private double calculateVelocity() {

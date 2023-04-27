@@ -36,7 +36,7 @@ public class RobotContainer {
   private final XboxController driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final XboxController assistController = new XboxController(OperatorConstants.kAssistControllerPort);
 
-  // private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
+  private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -74,8 +74,10 @@ public class RobotContainer {
     JoystickButton buttonX_as = new JoystickButton(assistController, Constants.OperatorConstants.X_BUTTON);
     JoystickButton rightBumper_as = new JoystickButton(assistController, Constants.OperatorConstants.RIGHT_BUMPER);
 
-    // buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp, snatchAndSpitSubsystem));
-    // buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown, snatchAndSpitSubsystem));
+    buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp, snatchAndSpitSubsystem));
+    buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown, snatchAndSpitSubsystem));
+    rightBumper_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::spit, snatchAndSpitSubsystem));
+    rightBumper_as.whileFalse(new InstantCommand(snatchAndSpitSubsystem::stop, snatchAndSpitSubsystem));
 
   }
 
