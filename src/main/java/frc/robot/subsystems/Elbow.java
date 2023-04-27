@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAnalogSensor;
@@ -18,8 +19,8 @@ public class Elbow extends SubsystemBase {
 
   private final RelativeEncoder encoder;
   private SparkMaxPIDController pidController;
-  private final CANSparkMax SparkMaxRight = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxID,MotorType.kBrushless);
-  private final CANSparkMax SparkMaxLeft = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxID, MotorType.kBrushless) ;
+  private final CANSparkMax SparkMaxRight = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxRightID,MotorType.kBrushless);
+  private final CANSparkMax SparkMaxLeft = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxLeftID, MotorType.kBrushless) ;
 
   /** Creates a new Elbow. */
   public Elbow() {
@@ -27,6 +28,10 @@ public class Elbow extends SubsystemBase {
     SparkMaxRight.restoreFactoryDefaults();
     SparkMaxRight.setIdleMode(IdleMode.kBrake);
     SparkMaxRight.enableVoltageCompensation(12);
+    
+    SparkMaxLeft.restoreFactoryDefaults();
+    SparkMaxLeft.setIdleMode(IdleMode.kBrake);
+    SparkMaxLeft.enableVoltageCompensation(12);
 
     encoder = SparkMaxRight.getEncoder();
 
@@ -50,11 +55,13 @@ public class Elbow extends SubsystemBase {
         Constants.ElbowConstants.ElbowPIDConstants.allowedError,
         Constants.ElbowConstants.ElbowPIDConstants.smartMotionSlot);
 
+        SparkMaxLeft.follow(SparkMaxRight, true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 
 }
