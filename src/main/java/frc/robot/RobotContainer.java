@@ -19,51 +19,63 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveBase babyBotBase = new DriveBase();
   private LED led = new LED(this);
-  
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController driverController = new XboxController(OperatorConstants.kDriverControllerPort);
   private final XboxController assistController = new XboxController(OperatorConstants.kAssistControllerPort);
 
-  private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
+  // private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
     babyBotBase.setDefaultCommand(
-                                                  //rotation                             speed
-      new RunCommand(() -> babyBotBase.arcadeDrive(driverController.getLeftY(),driverController.getRightX()) , babyBotBase));
-      //new RunCommand(() -> babyBotBase.arcadeDrive(m_driverController.getRightX(),-m_driverController.getLeftY()) , babyBotBase));
+        // rotation speed
+        new RunCommand(() -> babyBotBase.arcadeDrive(driverController.getLeftY(), driverController.getRightX()),
+            babyBotBase));
+    // new RunCommand(() ->
+    // babyBotBase.arcadeDrive(m_driverController.getRightX(),-m_driverController.getLeftY())
+    // , babyBotBase));
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
 
-JoystickButton buttonB_as = new JoystickButton(assistController,Constants.OperatorConstants.B_BUTTON);
-JoystickButton buttonX_as = new JoystickButton(assistController,Constants.OperatorConstants.X_BUTTON);
-JoystickButton rightBumper_as = new JoystickButton(assistController,Constants.OperatorConstants.RIGHT_BUMPER);
+    JoystickButton buttonB_as = new JoystickButton(assistController, Constants.OperatorConstants.B_BUTTON);
+    JoystickButton buttonX_as = new JoystickButton(assistController, Constants.OperatorConstants.X_BUTTON);
+    JoystickButton rightBumper_as = new JoystickButton(assistController, Constants.OperatorConstants.RIGHT_BUMPER);
 
-buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp,snatchAndSpitSubsystem));
-buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown,snatchAndSpitSubsystem));
-
+    // buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp, snatchAndSpitSubsystem));
+    // buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown, snatchAndSpitSubsystem));
 
   }
 
@@ -76,20 +88,20 @@ buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown,snatchAndS
     // An example command will be run in autonomous
     return null;
   }
-  
-	public boolean isRedAlliance() {
-		return DriverStation.getAlliance() == Alliance.Red;
-	}
 
-	public boolean isDisabled() {
-		return DriverStation.isDisabled();
-	}
+  public boolean isRedAlliance() {
+    return DriverStation.getAlliance() == Alliance.Red;
+  }
 
-	public boolean isAutonomous() {
-		return DriverStation.isAutonomous();
-	}
+  public boolean isDisabled() {
+    return DriverStation.isDisabled();
+  }
 
-	public boolean isTeleop() {
-		return DriverStation.isTeleop();
-	}
+  public boolean isAutonomous() {
+    return DriverStation.isAutonomous();
+  }
+
+  public boolean isTeleop() {
+    return DriverStation.isTeleop();
+  }
 }

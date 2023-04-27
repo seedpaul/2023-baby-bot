@@ -17,9 +17,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   public static class LEDConstants{
-    public static final int LED_PWM_PORT = 5;
+    public static final int LED_PWM_PORT = 0;
+    public static final int LED_LENGTH = 12;
   }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kAssistControllerPort = 1;
@@ -34,7 +37,6 @@ public final class Constants {
     public static final int ADIDAS_BUTTON = 8;
     public static final int LEFT_STICK_PRESS = 9;
     public static final int RIGHT_STICK_PRESS = 10;
-
   }
 
   public static class DriveBaseConstants {
@@ -99,10 +101,10 @@ public final class Constants {
         public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
       }
     }
-
   }
 
   public static class ElbowConstants {
+
     public static final int elbowSparkMaxID = 0;
 
     public static final class ElbowPIDConstants {

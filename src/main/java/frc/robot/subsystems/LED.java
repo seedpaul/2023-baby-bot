@@ -15,28 +15,40 @@ import frc.robot.trobot5013lib.led.SolidColorPattern;
 import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 import frc.robot.trobot5013lib.led.TrobotAddressableLEDPattern;
 import frc.robot.trobot5013lib.led.IntensityPattern;
-import frc.robot.trobot5013lib.led.ChasePattern;
+import frc.robot.trobot5013lib.led.ChaosPattern;
+import frc.robot.trobot5013lib.led.ScannerPattern;
+import frc.robot.trobot5013lib.led.AlternatingColorPattern;
 
 public class LED extends SubsystemBase {
-	private TrobotAddressableLED m_led = new TrobotAddressableLED(Constants.LEDConstants.LED_PWM_PORT, 60);
+	private TrobotAddressableLED m_led = new TrobotAddressableLED(Constants.LEDConstants.LED_PWM_PORT, Constants.LEDConstants.LED_LENGTH);
 	private RobotContainer m_RobotContainer;
-	private TrobotAddressableLEDPattern m_bluePattern = new SolidColorPattern(Color.kBlue);
-	private TrobotAddressableLEDPattern m_redPattern = new SolidColorPattern(Color.kRed);
-	// private TrobotAddressableLEDPattern m_disabledPattern = new ChasePattern(new
-	// Color[]{Color.kRed,Color.kWhite},3);
-	private TrobotAddressableLEDPattern m_disabledPattern = new RainbowPattern();
-	private TrobotAddressableLEDPattern m_greenPattern = new SolidColorPattern(Color.kGreen);
-	private TrobotAddressableLEDPattern m_yellowPattern = new SolidColorPattern(Color.kLightYellow);
-	private TrobotAddressableLEDPattern m_blinkingRed = new BlinkingPattern(Color.kRed, 0.25);
-	private TrobotAddressableLEDPattern m_blinkingGreen = new BlinkingPattern(Color.kGreen, 0.25);
-	private TrobotAddressableLEDPattern m_purplePattern = new SolidColorPattern(Color.kPurple);
-	private IntensityPattern m_blueIntensityPattern = new IntensityPattern(Color.kBlue, 0);
-	private IntensityPattern m_redIntensityPattern = new IntensityPattern(Color.kRed, 0);
 	private int intensityDegrees = 10;
     private Color[] redWhiteArray = {Color.kRed, Color.kWhite};
     private Color[] blueWhiteArray = {Color.kBlue, Color.kWhite};
+	private Color[] blackOrangeArray = {Color.kBlack, Color.kOrange};
+	private Color[] redWhiteBlueArray = {Color.kRed, Color.kWhite, Color.kBlue};
+
+	private TrobotAddressableLEDPattern m_bluePattern = new SolidColorPattern(Color.kBlue);
+	private TrobotAddressableLEDPattern m_redPattern = new SolidColorPattern(Color.kRed);
+
+	private TrobotAddressableLEDPattern m_alternatingColorPattern = new AlternatingColorPattern(redWhiteBlueArray);
+	private TrobotAddressableLEDPattern m_blinkingRed = new BlinkingPattern(Color.kRed, 0.25);
+	private TrobotAddressableLEDPattern m_blinkingGreen = new BlinkingPattern(Color.kGreen, 0.25);
+	private TrobotAddressableLEDPattern m_chaosPattern = new ChaosPattern();
     private TrobotAddressableLEDPattern m_redChasePattern = new ChasePattern(redWhiteArray, 3);
     private TrobotAddressableLEDPattern m_blueChasePattern = new ChasePattern(blueWhiteArray, 3);
+	private TrobotAddressableLEDPattern m_orangeChasePattern = new ChasePattern(blackOrangeArray, 3);
+	private TrobotAddressableLEDPattern m_redWhiteBlueChasePattern = new ChasePattern(redWhiteBlueArray, 2);
+	private IntensityPattern m_blueIntensityPattern = new IntensityPattern(Color.kBlue, intensityDegrees);
+	private IntensityPattern m_redIntensityPattern = new IntensityPattern(Color.kRed, intensityDegrees);
+	private TrobotAddressableLEDPattern m_rainbowPattern = new RainbowPattern();
+	private TrobotAddressableLEDPattern m_scannerPattern = new ScannerPattern(Color.kChartreuse,Color.kDeepPink,2);
+	private TrobotAddressableLEDPattern m_greenPattern = new SolidColorPattern(Color.kGreen);
+	private TrobotAddressableLEDPattern m_yellowPattern = new SolidColorPattern(Color.kLightYellow);
+	private TrobotAddressableLEDPattern m_purplePattern = new SolidColorPattern(Color.kPurple);
+	
+	private TrobotAddressableLEDPattern m_disabledPattern = m_scannerPattern;
+	
 	/** Creates a new StatusLED. */
 	public LED(RobotContainer robotContainer) {
 		super();
