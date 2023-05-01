@@ -50,7 +50,7 @@ public final class Constants {
   }
 
   public static class SnatchAndSpitConstants {
-    public static final int upperSparkMaxID = 6;
+    public static final int upperSparkMaxID = 31;
     public static final int lowerSparkMaxID = 9;
 
     public static final class UpperPIDConstants {
