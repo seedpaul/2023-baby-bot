@@ -122,6 +122,13 @@ public final class Constants {
       public static final double maxAcc = 1500;
       public static final int smartMotionSlot = 0;
       public static final double allowedError = 0;
+
+      public static final class ElbowPositionConstants {
+        public static final double starting = 0;
+        public static final double intake = 0;
+        public static final double shooting = 0;
+        public static final double drop = 0;
+      } 
     }
 
   }
