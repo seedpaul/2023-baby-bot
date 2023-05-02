@@ -20,7 +20,10 @@ import frc.robot.trobot5013lib.led.ScannerPattern;
 import frc.robot.trobot5013lib.led.AlternatingColorPattern;
 
 public class LED extends SubsystemBase {
-	private TrobotAddressableLED m_led = new TrobotAddressableLED(Constants.LEDConstants.LED_PWM_PORT, Constants.LEDConstants.LED_LENGTH);
+	// private TrobotAddressableLED m_led1 = new TrobotAddressableLED(Constants.LEDConstants.LED1_PWM_PORT, Constants.LEDConstants.LED1_LENGTH);
+	//private TrobotAddressableLED m_led2 = new TrobotAddressableLED(Constants.LEDConstants.LED2_PWM_PORT, Constants.LEDConstants.LED2_LENGTH);
+	private TrobotAddressableLED m_led3 = new TrobotAddressableLED(Constants.LEDConstants.LED3_PWM_PORT, Constants.LEDConstants.LED3_LENGTH);
+
 	private RobotContainer m_RobotContainer;
 	private int intensityDegrees = 10;
     private Color[] redWhiteArray = {Color.kRed, Color.kWhite};
@@ -62,11 +65,17 @@ public class LED extends SubsystemBase {
 		// set patterns to run based on various statuses of the robot via the m_RobotContainer
 
 		if (m_RobotContainer.isDisabled()) {
-			m_led.setPattern(m_disabledPattern);
+			// m_led1.setPattern(m_disabledPattern);
+			//m_led2.setPattern(m_disabledPattern);
+			m_led3.setPattern(m_disabledPattern);
 		} else if (m_RobotContainer.isRedAlliance()) {
-			m_led.setPattern(m_redPattern);
+			// m_led1.setPattern(m_redPattern);
+			//m_led2.setPattern(m_redPattern);
+			m_led3.setPattern(m_redPattern);
 		} else {
-			m_led.setPattern(m_bluePattern);
+			// m_led1.setPattern(m_bluePattern);
+			//m_led2.setPattern(m_redPattern);
+			m_led3.setPattern(m_redPattern);
 		}
 
 	}

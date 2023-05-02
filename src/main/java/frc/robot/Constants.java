@@ -19,8 +19,15 @@ package frc.robot;
 public final class Constants {
 
   public static class LEDConstants{
-    public static final int LED_PWM_PORT = 0;
-    public static final int LED_LENGTH = 12;
+    public static final int LED1_PWM_PORT = 0;
+    public static final int LED1_LENGTH = 12;
+
+    public static final int LED2_PWM_PORT = 1;
+    public static final int LED2_LENGTH = 23;
+
+    public static final int LED3_PWM_PORT = 2;
+    public static final int LED3_LENGTH = 23;
+
   }
 
   public static class OperatorConstants {
@@ -91,14 +98,14 @@ public final class Constants {
         public static final double shootHigh = 5200;
         public static final double shootMiddle = 3000;
         public static final double drop = 500;
-        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
+        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop};
       }
       public static final class Lower{
         public static final double intake = 1000;
         public static final double shootHigh = 5200;
         public static final double shootMiddle = 3000;
         public static final double drop = 500;
-        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop  };
+        public static final double [] validVelocity = {intake,shootHigh,shootMiddle,drop};
       }
     }
   }
@@ -122,14 +129,14 @@ public final class Constants {
       public static final double maxAcc = 1500;
       public static final int smartMotionSlot = 0;
       public static final double allowedError = 0;
-
-      public static final class ElbowPositionConstants {
-        public static final double starting = 0;
-        public static final double intake = 0;
-        public static final double shooting = 0;
-        public static final double drop = 0;
-      } 
     }
 
+    public static final class ElbowPositionConstants {
+      public static final double starting = 90;
+      public static final double shooting = 60;
+      public static final double drop = 30;
+      public static final double intake = 0;
+      public static final double [] positions = {starting,shooting,drop,intake};
+    } 
   }
 }

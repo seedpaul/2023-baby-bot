@@ -112,11 +112,10 @@ public class SnatchAndSpit extends SubsystemBase {
       pidControllerUpper.setReference(0, CANSparkMax.ControlType.kVelocity);
     }
 
-    SmartDashboard.getBoolean("Intake Velocity", currentRPMIndex == 0);
-    SmartDashboard.getBoolean("High Velocity", currentRPMIndex == 1);
-    SmartDashboard.getBoolean("Middle Velocity", currentRPMIndex == 2);
-    SmartDashboard.getBoolean("Drop Velocity", currentRPMIndex == 3);
-
+    SmartDashboard.putBoolean("Intake Velocity", currentRPMIndex == 0);
+    SmartDashboard.putBoolean("High Velocity", currentRPMIndex == 1);
+    SmartDashboard.putBoolean("Middle Velocity", currentRPMIndex == 2);
+    SmartDashboard.putBoolean("Drop Velocity", currentRPMIndex == 3);
   }
 
   public void spit() {
@@ -170,16 +169,14 @@ public class SnatchAndSpit extends SubsystemBase {
     }
     TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.validVelocity[currentRPMIndex];
     TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.validVelocity[currentRPMIndex];
-
   }
 
   public void stepDown() {
-    if (currentRPMIndex < 0) {
+    if (currentRPMIndex > 0) {
       currentRPMIndex--;
     }
     TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.validVelocity[currentRPMIndex];
     TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.validVelocity[currentRPMIndex];
-
   }
 
 }
