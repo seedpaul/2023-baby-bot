@@ -5,18 +5,24 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.auto.SingleTrajectoryAutoWithTargeting;
 import frc.robot.subsystems.DriveBase;
-import frc.robot.subsystems.LED;
+import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.SnatchAndSpit;
+import frc.robot.subsystems.components.LED;
+import frc.robot.subsystems.components.NavX;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -29,7 +35,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveBase babyBotBase = new DriveBase();
+  private final NavX navX = new NavX();
+  private final DriveBase babyBotBase = new DriveBase(navX);
   private LED led = new LED(this);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -37,6 +44,10 @@ public class RobotContainer {
   private final XboxController assistController = new XboxController(OperatorConstants.kAssistControllerPort);
 
   private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
+  private final Elbow elbow = Elbow.getInstance();
+  
+  private SingleTrajectoryAutoWithTargeting balance;
+  private SendableChooser<Command> m_chooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -45,39 +56,54 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
+    Trajectory balanceTrajectory = PathPlanner.loadPath("BalancePath", new PathConstraints(.85, 1.0));
+    balance = new SingleTrajectoryAutoWithTargeting(snatchAndSpitSubsystem,elbow,babyBotBase,balanceTrajectory);
+
+    this.m_chooser = new SendableChooser<Command>();
+    this.m_chooser.setDefaultOption("Balance", balance);
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData(this.m_chooser);
+
     babyBotBase.setDefaultCommand(
         // rotation speed
         new RunCommand(() -> babyBotBase.arcadeDrive(driverController.getLeftY(), driverController.getRightX()),
             babyBotBase));
-    // new RunCommand(() ->
-    // babyBotBase.arcadeDrive(m_driverController.getRightX(),-m_driverController.getLeftY())
-    // , babyBotBase));
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
 
-    JoystickButton buttonB_as = new JoystickButton(assistController, Constants.OperatorConstants.B_BUTTON);
-    JoystickButton buttonX_as = new JoystickButton(assistController, Constants.OperatorConstants.X_BUTTON);
-    JoystickButton rightBumper_as = new JoystickButton(assistController, Constants.OperatorConstants.RIGHT_BUMPER);
+    JoystickButton buttonB_dr = new JoystickButton(driverController, Constants.OperatorConstants.B_BUTTON);
+    JoystickButton buttonX_dr = new JoystickButton(driverController, Constants.OperatorConstants.X_BUTTON);
 
-    buttonB_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepUp, snatchAndSpitSubsystem));
-    buttonX_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::stepDown, snatchAndSpitSubsystem));
-    rightBumper_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::spit, snatchAndSpitSubsystem));
-    rightBumper_as.whileFalse(new InstantCommand(snatchAndSpitSubsystem::stop, snatchAndSpitSubsystem));
+    JoystickButton buttonY_as = new JoystickButton(assistController, Constants.OperatorConstants.Y_BUTTON);
+    JoystickButton buttonA_as = new JoystickButton(assistController, Constants.OperatorConstants.A_BUTTON);
+
+    JoystickButton rightBumper_as = new JoystickButton(assistController, Constants.OperatorConstants.RIGHT_BUMPER);
+    JoystickButton leftBumper_as = new JoystickButton(assistController, Constants.OperatorConstants.LEFT_BUMPER);
+
+    //driver *******************************************************************
+    //manual override elbow
+    buttonB_dr.whileTrue(new InstantCommand(elbow::up, elbow));
+    buttonB_dr.onFalse(new InstantCommand(elbow::stop, elbow));
+
+    buttonX_dr.whileTrue(new InstantCommand(elbow::down, elbow));
+    buttonX_dr.onFalse(new InstantCommand(elbow::stop, elbow));
+    //driver end *******************************************************************
+
+
+    //assistant*******************************************************************
+    //step up and down
+    buttonY_as.whileTrue(new InstantCommand(elbow::stepUp, elbow));
+    buttonA_as.whileTrue(new InstantCommand(elbow::stepDown, elbow));
+
+    //eject
+    rightBumper_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::eject, snatchAndSpitSubsystem));
+    rightBumper_as.onFalse(new InstantCommand(snatchAndSpitSubsystem::end, snatchAndSpitSubsystem));
+
+    //intake
+    leftBumper_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::intake, snatchAndSpitSubsystem));
+    //end assistant*******************************************************************
 
   }
 
@@ -88,7 +114,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return m_chooser.getSelected();
   }
 
   public boolean isRedAlliance() {

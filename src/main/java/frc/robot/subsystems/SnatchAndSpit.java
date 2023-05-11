@@ -40,7 +40,6 @@ public class SnatchAndSpit extends SubsystemBase {
       sas = new SnatchAndSpit();
     }
     return sas;
-
   }
 
   /** Creates a new SnatchAndSpit. */
@@ -103,14 +102,14 @@ public class SnatchAndSpit extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if(enableSpit){
-      pidControllerLower.setReference(TargetVelocityLower, CANSparkMax.ControlType.kVelocity);
-      pidControllerUpper.setReference(TargetVelocityUpper, CANSparkMax.ControlType.kVelocity);
+    // if(enableSpit){
+    //   pidControllerLower.setReference(TargetVelocityLower, CANSparkMax.ControlType.kVelocity);
+    //   pidControllerUpper.setReference(TargetVelocityUpper, CANSparkMax.ControlType.kVelocity);
     
-    }else{
-      pidControllerLower.setReference(0, CANSparkMax.ControlType.kVelocity);
-      pidControllerUpper.setReference(0, CANSparkMax.ControlType.kVelocity);
-    }
+    // }else{
+    //   pidControllerLower.setReference(0, CANSparkMax.ControlType.kVelocity);
+    //   pidControllerUpper.setReference(0, CANSparkMax.ControlType.kVelocity);
+    // }
 
     SmartDashboard.putBoolean("Intake Velocity", currentRPMIndex == 0);
     SmartDashboard.putBoolean("High Velocity", currentRPMIndex == 1);
@@ -131,7 +130,7 @@ public class SnatchAndSpit extends SubsystemBase {
     return 0.0;
   }
 
-  public void intake() {
+  public void intaker() {
     // TODO: turn wheels so cube is injested
 
     TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.intake;
@@ -177,6 +176,27 @@ public class SnatchAndSpit extends SubsystemBase {
     }
     TargetVelocityLower = Constants.SnatchAndSpitConstants.VelocityConstants.Lower.validVelocity[currentRPMIndex];
     TargetVelocityUpper = Constants.SnatchAndSpitConstants.VelocityConstants.Upper.validVelocity[currentRPMIndex];
+  }
+
+  public void eject() {
+    lowerSparkMax.set(-1);
+    upperSparkMax.set(-1);
+  }
+
+  public void intake() {
+    if(lowerSparkMax.get() < .125){
+      lowerSparkMax.set(0.2);
+      upperSparkMax.set(0.2);
+    }
+    else{
+      lowerSparkMax.set(0.03);
+      upperSparkMax.set(0.03);
+    }
+  }
+
+  public void end(){
+    lowerSparkMax.set(0.0);
+    upperSparkMax.set(0.0);
   }
 
 }
