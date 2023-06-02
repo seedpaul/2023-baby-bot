@@ -20,12 +20,15 @@ import frc.robot.Constants;
 public class Elbow extends SubsystemBase {
 
   private static Elbow elbow = null;
-  private final CANSparkMax SparkMaxRight = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxRightID,MotorType.kBrushless);
-  private final CANSparkMax SparkMaxLeft = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxLeftID, MotorType.kBrushless) ;
+  private final CANSparkMax SparkMaxRight = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxRightID,
+      MotorType.kBrushless);
+  private final CANSparkMax SparkMaxLeft = new CANSparkMax(Constants.ElbowConstants.elbowSparkMaxLeftID,
+      MotorType.kBrushless);
   private final WPI_CANCoder cANCoder = new WPI_CANCoder(Constants.ElbowConstants.elbowCANCoderID);
   private CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
 
-  private PIDController pidController = new PIDController(Constants.ElbowConstants.ElbowPIDConstants.kP, Constants.ElbowConstants.ElbowPIDConstants.kI, Constants.ElbowConstants.ElbowPIDConstants.kD);
+  private PIDController pidController = new PIDController(Constants.ElbowConstants.ElbowPIDConstants.kP,
+      Constants.ElbowConstants.ElbowPIDConstants.kI, Constants.ElbowConstants.ElbowPIDConstants.kD);
 
   private int currentPositionIndex = 0;
 
@@ -39,7 +42,7 @@ public class Elbow extends SubsystemBase {
   /** Creates a new Elbow. */
   private Elbow() {
 
-    canCoderConfiguration.magnetOffsetDegrees = Constants.ElbowConstants.ElbowPositionConstants.magnetOffsetDegrees;// TODO: add this value to constants
+    canCoderConfiguration.magnetOffsetDegrees = Constants.ElbowConstants.ElbowPositionConstants.magnetOffsetDegrees;
     canCoderConfiguration.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
     canCoderConfiguration.sensorDirection = false;
     canCoderConfiguration.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
@@ -50,65 +53,80 @@ public class Elbow extends SubsystemBase {
     SparkMaxRight.restoreFactoryDefaults();
     SparkMaxRight.setIdleMode(IdleMode.kBrake);
     SparkMaxRight.enableVoltageCompensation(12);
-    SparkMaxRight.setSmartCurrentLimit(10,65,100);
-    
+    SparkMaxRight.setSmartCurrentLimit(10, 65, 100);
+
     SparkMaxLeft.restoreFactoryDefaults();
     SparkMaxLeft.setIdleMode(IdleMode.kBrake);
     SparkMaxLeft.enableVoltageCompensation(12);
-    SparkMaxLeft.setSmartCurrentLimit(10,65,100);
+    SparkMaxLeft.setSmartCurrentLimit(1065, 100);
 
     SparkMaxLeft.follow(SparkMaxRight, true);
 
-    // pidController.enableContinuousInput(Constants.ElbowConstants.ElbowPIDConstants.kMaxOutput, Constants.ElbowConstants.ElbowPIDConstants.kMinOutput);
+    double currentEncodeValue = cANCoder.getAbsolutePosition();
+    if (currentEncodeValue < 35 && currentEncodeValue > 15) {
+      currentPositionIndex = 0;
+    } else if (currentEncodeValue < 111 && currentEncodeValue > 91) {
+      currentPositionIndex = 1;
+    } else if (currentEncodeValue < 147 && currentEncodeValue > 127) {
+      currentPositionIndex = 2;
+    } else {
+      currentPositionIndex = 0;
+    }
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Start", currentPositionIndex == 0);
-    SmartDashboard.putBoolean("Shoot", currentPositionIndex == 1);
-    SmartDashboard.putBoolean("Drop", currentPositionIndex == 2);
-    SmartDashboard.putBoolean("Intake", currentPositionIndex == 3);
+    // SmartDashboard.putBoolean("Shoot", currentPositionIndex == 1);
+    SmartDashboard.putBoolean("Drop", currentPositionIndex == 1);
+    SmartDashboard.putBoolean("Intake", currentPositionIndex == 2);
 
-    SmartDashboard.putNumber("Elbow Target", Constants.ElbowConstants.ElbowPositionConstants.positions[currentPositionIndex]);
+    SmartDashboard.putNumber("Elbow Target",
+        Constants.ElbowConstants.ElbowPositionConstants.positions[currentPositionIndex]);
     SmartDashboard.putNumber("Elbow Encoder", cANCoder.getAbsolutePosition());
 
     SmartDashboard.putNumber("currentPositionIndex", currentPositionIndex);
 
-    double output = -pidController.calculate(cANCoder.getAbsolutePosition(),Constants.ElbowConstants.ElbowPositionConstants.positions[currentPositionIndex]);
+    double output = -pidController.calculate(cANCoder.getAbsolutePosition(),
+        Constants.ElbowConstants.ElbowPositionConstants.positions[currentPositionIndex]);
     SmartDashboard.putNumber("PID output", output);
     SparkMaxRight.set(output);
   }
 
   public void stepDown() {
-    // pidController.enableContinuousInput(Constants.ElbowConstants.ElbowPIDConstants.kMaxOutput, Constants.ElbowConstants.ElbowPIDConstants.kMinOutput);
-    if (currentPositionIndex < 3) {
+    // pidController.enableContinuousInput(Constants.ElbowConstants.ElbowPIDConstants.kMaxOutput,
+    // Constants.ElbowConstants.ElbowPIDConstants.kMinOutput);
+    if (currentPositionIndex < 2) {
       currentPositionIndex++;
     }
   }
 
   public void stepUp() {
-    // pidController.enableContinuousInput(Constants.ElbowConstants.ElbowPIDConstants.kMaxOutput, Constants.ElbowConstants.ElbowPIDConstants.kMinOutput);pidController.enableContinuousInput(1, -1);
+    // pidController.enableContinuousInput(Constants.ElbowConstants.ElbowPIDConstants.kMaxOutput,
+    // Constants.ElbowConstants.ElbowPIDConstants.kMinOutput);pidController.enableContinuousInput(1,
+    // -1);
     if (currentPositionIndex > 0) {
       currentPositionIndex--;
     }
   }
 
-  public void setElbowPosition(){
+  public void setElbowPosition() {
     // pidController.setSetpoint(Constants.ElbowConstants.ElbowPositionConstants.positions[currentPositionIndex]);
   }
 
-  public void up(){
+  public void up() {
     // pidController.disableContinuousInput();
     SparkMaxRight.set(0.3);
   }
 
-  public void down(){
+  public void down() {
     // pidController.disableContinuousInput();
     SparkMaxRight.set(-0.3);
   }
 
-  public void stop(){
+  public void stop() {
     SparkMaxRight.set(0.0);
   }
 }

@@ -32,6 +32,7 @@ public class NavX extends SubsystemBase {
     }
 
     m_navX.reset();
+    m_navX.calibrate();
   }
 
   @Override
@@ -54,7 +55,9 @@ public class NavX extends SubsystemBase {
 
   public Rotation2d getRotation2d(){
     //Return the heading of the robot as a edu.wpi.first.math.geometry.Rotation2d.
-    return m_navX.getRotation2d();
+
+    return Rotation2d.fromDegrees(m_navX.getAngle());
+    //return m_navX.getRotation2d();
   }
 
   public float getPitch() {

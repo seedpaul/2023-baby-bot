@@ -68,7 +68,7 @@ public final class Constants {
   }
 
   public static class SnatchAndSpitConstants {
-    public static final int upperSparkMaxID = 31;
+    public static final int upperSparkMaxID = 33;
     public static final int lowerSparkMaxID = 9;
 
     public static final class UpperPIDConstants {
@@ -141,11 +141,12 @@ public final class Constants {
 
       private static final int zeroOffset = 30;
       public static final double magnetOffsetDegrees = -66.5 + zeroOffset;
-      public static final double starting = 0 + zeroOffset;
-      public static final double shooting = 36 + zeroOffset;
+      public static final double starting = -10 + zeroOffset;
+      //public static final double shooting = 36 + zeroOffset;
       public static final double drop = 71 + zeroOffset;
       public static final double intake = 107 + zeroOffset;
-      public static final double [] positions = {starting,shooting,drop,intake};
+      //public static final double [] positions = {starting,shooting,drop,intake};
+      public static final double [] positions = {starting,drop,intake};
     } 
   }
 

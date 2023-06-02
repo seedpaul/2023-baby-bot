@@ -5,12 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.auto.SingleTrajectoryAutoWithTargeting;
+import frc.robot.commands.auto.SingleTrajectory;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Elbow;
 import frc.robot.subsystems.SnatchAndSpit;
 import frc.robot.subsystems.components.LED;
 import frc.robot.subsystems.components.NavX;
+import frc.robot.subsystems.components.TriggerButton;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 
@@ -46,7 +48,7 @@ public class RobotContainer {
   private final SnatchAndSpit snatchAndSpitSubsystem = SnatchAndSpit.getInstance();
   private final Elbow elbow = Elbow.getInstance();
   
-  private SingleTrajectoryAutoWithTargeting balance;
+  private SingleTrajectory move,balance,side,center;
   private SendableChooser<Command> m_chooser;
 
   /**
@@ -56,11 +58,21 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
+    Trajectory moveTrajectory = PathPlanner.loadPath("MovePath", new PathConstraints(.85, 1.0));
     Trajectory balanceTrajectory = PathPlanner.loadPath("BalancePath", new PathConstraints(.85, 1.0));
-    balance = new SingleTrajectoryAutoWithTargeting(snatchAndSpitSubsystem,elbow,babyBotBase,balanceTrajectory);
+    Trajectory sideTrajectory = PathPlanner.loadPath("SideCubePath", new PathConstraints(.85, 1.0));
+    Trajectory centerTrajectory = PathPlanner.loadPath("CenterCubePath", new PathConstraints(.85, 1.0));
+
+    move = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,moveTrajectory,"move");
+    balance = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,balanceTrajectory,"balance");
+    side = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,sideTrajectory,"side");
+    center = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,centerTrajectory,"center");
 
     this.m_chooser = new SendableChooser<Command>();
-    this.m_chooser.setDefaultOption("Balance", balance);
+    this.m_chooser.setDefaultOption("Move", move);
+    this.m_chooser.addOption("Balance", balance);
+    this.m_chooser.addOption("Side", side);
+    this.m_chooser.addOption("Center", center);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData(this.m_chooser);
@@ -72,6 +84,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+
+    TriggerButton rightTrigger_as = new TriggerButton(assistController, XboxController.Axis.kRightTrigger);
+    TriggerButton leftTrigger_as = new TriggerButton(assistController, XboxController.Axis.kLeftTrigger);
 
     JoystickButton buttonB_dr = new JoystickButton(driverController, Constants.OperatorConstants.B_BUTTON);
     JoystickButton buttonX_dr = new JoystickButton(driverController, Constants.OperatorConstants.X_BUTTON);
@@ -98,13 +113,16 @@ public class RobotContainer {
     buttonA_as.whileTrue(new InstantCommand(elbow::stepDown, elbow));
 
     //eject
-    rightBumper_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::eject, snatchAndSpitSubsystem));
+    rightBumper_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::spitFast, snatchAndSpitSubsystem));
     rightBumper_as.onFalse(new InstantCommand(snatchAndSpitSubsystem::end, snatchAndSpitSubsystem));
+
+    rightTrigger_as.whileTrue(new InstantCommand(snatchAndSpitSubsystem::spitSlow, snatchAndSpitSubsystem));
+    rightTrigger_as.onFalse(new InstantCommand(snatchAndSpitSubsystem::end, snatchAndSpitSubsystem));
 
     //intake
     leftBumper_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::intake, snatchAndSpitSubsystem));
+    leftTrigger_as.onTrue(new InstantCommand(snatchAndSpitSubsystem::end, snatchAndSpitSubsystem));
     //end assistant*******************************************************************
-
   }
 
   /**
@@ -133,3 +151,4 @@ public class RobotContainer {
     return DriverStation.isTeleop();
   }
 }
+

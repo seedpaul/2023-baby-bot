@@ -25,8 +25,8 @@ public class LED extends SubsystemBase {
 
 	private RobotContainer m_RobotContainer;
 	private int intensityDegrees = 10;
-    private Color[] redWhiteArray = {Color.kRed, Color.kWhite};
-    private Color[] blueWhiteArray = {Color.kBlue, Color.kWhite};
+    private Color[] redWhiteArray = {Color.kRed, Color.kBlack};
+    private Color[] blueWhiteArray = {Color.kBlue, Color.kBlack};
 	private Color[] pinkOrangeArray = {Constants.LEDConstants.pink, Constants.LEDConstants.orange};
 	private Color[] blackOrangeArray = {Color.kBlack, Constants.LEDConstants.orange};
 	private Color[] blueOrangeArray = {Color.kBlue, Constants.LEDConstants.orange};
@@ -52,7 +52,7 @@ public class LED extends SubsystemBase {
 	private TrobotAddressableLEDPattern m_yellowPattern = new SolidColorPattern(Color.kLightYellow);
 	private TrobotAddressableLEDPattern m_purplePattern = new SolidColorPattern(Color.kPurple);
 	
-	private TrobotAddressableLEDPattern m_disabledPattern = m_redWhiteBlueChasePattern;
+	private TrobotAddressableLEDPattern m_disabledPattern = m_rainbowPattern;
 	
 	/** Creates a new StatusLED. */
 	public LED(RobotContainer robotContainer) {
@@ -67,9 +67,9 @@ public class LED extends SubsystemBase {
 		if (m_RobotContainer.isDisabled()) {
 			m_led.setPattern(m_disabledPattern);
 		} else if (m_RobotContainer.isRedAlliance()) {
-			m_led.setPattern(m_redPattern);
+			m_led.setPattern(m_redIntensityPattern);
 		} else {
-			m_led.setPattern(m_redPattern);
+			m_led.setPattern(m_blueIntensityPattern);
 		}
 
 	}
