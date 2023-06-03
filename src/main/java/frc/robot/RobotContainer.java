@@ -60,8 +60,8 @@ public class RobotContainer {
 
     Trajectory moveTrajectory = PathPlanner.loadPath("MovePath", new PathConstraints(.85, 1.0));
     Trajectory balanceTrajectory = PathPlanner.loadPath("BalancePath", new PathConstraints(.85, 1.0));
-    Trajectory sideTrajectory = PathPlanner.loadPath("SideCubePath", new PathConstraints(.85, 1.0));
-    Trajectory centerTrajectory = PathPlanner.loadPath("CenterCubePath", new PathConstraints(.85, 1.0));
+    Trajectory sideTrajectory = PathPlanner.loadPath("SideCubePath", new PathConstraints(1.85, 2.0));
+    Trajectory centerTrajectory = PathPlanner.loadPath("CenterCubePath", new PathConstraints(1.85, 2.0));
 
     move = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,moveTrajectory,"move");
     balance = new SingleTrajectory(snatchAndSpitSubsystem,elbow,babyBotBase,balanceTrajectory,"balance");

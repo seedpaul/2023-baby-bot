@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveBase;
@@ -18,12 +19,16 @@ public class SingleTrajectory extends SequentialCommandGroup {
 
   private DriveBase m_drivetrain;
   private Trajectory m_trajectory;
+  private SnatchAndSpit m_snatchAndSpit;
+  private Elbow m_elbow;
 
   public SingleTrajectory(SnatchAndSpit in_snatchAndSpit, Elbow in_elbow, DriveBase in_drivetrain,
       Trajectory in_trajectory, String route) {
 
     m_drivetrain = in_drivetrain;
     m_trajectory = in_trajectory;
+    m_snatchAndSpit = in_snatchAndSpit;
+    m_elbow = in_elbow;
 
     var leftController = new PIDController(AutoDriveConstants.kPDriveVel, 0, 0);
     var rightController = new PIDController(AutoDriveConstants.kPDriveVel, 0, 0);
@@ -83,96 +88,71 @@ public class SingleTrajectory extends SequentialCommandGroup {
   private void moveRoutine(RamseteCommand ramseteCommand) {
 
     addCommands(
-        // enabling Targetting and shooting puts intake elbow down
-        // new
-        // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-        // new WaitCommand(3),
-        // new
-        // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController),
-        // new InstantCommand(m_masterController::intakeWheelsOn,m_masterController),
-
-        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain)
-            .andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain)))// ,
-
-    // new InstantCommand(m_masterController::intakeWheelsOff,m_masterController),
-    // new
-    // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-    // new WaitCommand(3),
-    // new
-    // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController)
-
+      new InstantCommand(m_snatchAndSpit::spitFast,m_snatchAndSpit),
+      new WaitCommand(1),
+      new InstantCommand(m_snatchAndSpit::end,m_snatchAndSpit),
+      ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain).andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain)))
     );
   }
 
   private void balanceRoutine(RamseteCommand ramseteCommand) {
 
     addCommands(
-        // enabling Targetting and shooting puts intake elbow down
-        // new
-        // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-        // new WaitCommand(3),
-        // new
-        // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController),
-        // new InstantCommand(m_masterController::intakeWheelsOn,m_masterController),
-
-        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain)
-            .andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain)))// ,
-
-    // new InstantCommand(m_masterController::intakeWheelsOff,m_masterController),
-    // new
-    // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-    // new WaitCommand(3),
-    // new
-    // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController)
-
+      new InstantCommand(m_snatchAndSpit::spitFast,m_snatchAndSpit),
+      new WaitCommand(1),
+      new InstantCommand(m_snatchAndSpit::end,m_snatchAndSpit),
+      ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain).andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain))),
+      new InstantCommand(m_drivetrain::autoBalanceWithPID,m_drivetrain)
     );
   }
 
   private void sideRoutine(RamseteCommand ramseteCommand) {
 
     addCommands(
-        // enabling Targetting and shooting puts intake elbow down
-        // new
-        // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-        // new WaitCommand(3),
-        // new
-        // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController),
-        // new InstantCommand(m_masterController::intakeWheelsOn,m_masterController),
-
-        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain)
-            .andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain)))// ,
-
-    // new InstantCommand(m_masterController::intakeWheelsOff,m_masterController),
-    // new
-    // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-    // new WaitCommand(3),
-    // new
-    // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController)
-
+      new InstantCommand(m_snatchAndSpit::spitFast,m_snatchAndSpit),
+      new WaitCommand(1),
+      new InstantCommand(m_snatchAndSpit::end,m_snatchAndSpit),
+      new ParallelCommandGroup(      
+        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain).andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain))),
+        new SequentialCommandGroup(
+          new WaitCommand(1.5),
+          new InstantCommand(m_elbow::intake,m_elbow),
+          new WaitCommand(5),
+          new InstantCommand(m_elbow::Start,m_elbow)
+        ),
+        new SequentialCommandGroup(
+          new WaitCommand(1.5),
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit),
+          new WaitCommand(5),
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)
+        )
+      ),
+      new InstantCommand(m_snatchAndSpit::spitSlow,m_snatchAndSpit)
     );
   }
 
   private void centerRoutine(RamseteCommand ramseteCommand) {
 
     addCommands(
-        // enabling Targetting and shooting puts intake elbow down
-        // new
-        // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-        // new WaitCommand(3),
-        // new
-        // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController),
-        // new InstantCommand(m_masterController::intakeWheelsOn,m_masterController),
-
-        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain)
-            .andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain)))// ,
-
-    // new InstantCommand(m_masterController::intakeWheelsOff,m_masterController),
-    // new
-    // InstantCommand(m_masterController::enabledTargetingAndShooting,m_masterController),
-    // new WaitCommand(3),
-    // new
-    // InstantCommand(m_masterController::disabledTargetingAndShooting,m_masterController)
-
+      new InstantCommand(m_snatchAndSpit::spitFast,m_snatchAndSpit),
+      new WaitCommand(1),
+      new InstantCommand(m_snatchAndSpit::end,m_snatchAndSpit),
+      new ParallelCommandGroup(      
+        ramseteCommand.andThen(new InstantCommand(m_drivetrain::setBrake, m_drivetrain).andThen(new InstantCommand(m_drivetrain::tankDriveVoltageStop, m_drivetrain))),
+        new SequentialCommandGroup(
+          new WaitCommand(1.5),
+          new InstantCommand(m_elbow::intake,m_elbow),
+          new WaitCommand(5),
+          new InstantCommand(m_elbow::Start,m_elbow)
+        ),
+        new SequentialCommandGroup(
+          new WaitCommand(1.5),
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit),
+          new WaitCommand(5),
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)
+        )
+      ),
+      new InstantCommand(m_snatchAndSpit::spitSlow,m_snatchAndSpit)
     );
   }
 }
