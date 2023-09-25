@@ -124,7 +124,7 @@ public class SingleTrajectory extends SequentialCommandGroup {
           new WaitCommand(1.5),
           new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit),
           new WaitCommand(5),
-          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)//slow intake
         )
       ),
       new InstantCommand(m_snatchAndSpit::spitSlow,m_snatchAndSpit)
@@ -149,7 +149,7 @@ public class SingleTrajectory extends SequentialCommandGroup {
           new WaitCommand(1.5),
           new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit),
           new WaitCommand(5),
-          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)
+          new InstantCommand(m_snatchAndSpit::intake,m_snatchAndSpit)//slow intake
         )
       ),
       new InstantCommand(m_snatchAndSpit::spitSlow,m_snatchAndSpit)

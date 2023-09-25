@@ -52,8 +52,8 @@ public final class Constants {
     public static final int rightBackTalonFX_ID = 21;
     public static final int rightFrontTalonFX_ID = 24;
 
-    public static final double rotationGoverner = 1.0;
-    public static final double speedGoverner = 1.0;
+    public static final double rotationGoverner = 1;
+    public static final double speedGoverner = 1;
 
     public static final double wheelcircumference = 0.49149; // meters
     public static final double cpr = 2048; // count per rotation for talonFX integrated encoder
